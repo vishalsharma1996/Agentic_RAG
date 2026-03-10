@@ -8,13 +8,19 @@ def clean_text_content(text):
     Minimal structural cleaning for research-paper text.
 
     Cleaning steps:
+    1: Remove table 1: table 1 : table-1: table 1. and any other format
     1. Remove citation markers like [29], [12], [3,4]
     2. Normalize whitespace
     3. Fix punctuation spacing
     4. Normalize parenthesis spacing
     5. Preserve mathematical tokens
     """
-    
+    text = text.lower()
+
+    text = re.sub(r"table\s*[-]?\s*\d+\s*[:\.]\s*", "", text)
+
+    text = text.replace('-','')
+
     text = text.replace('@',' at ').replace('%',' percent ').replace('$',' dollar ')
     # ---------------------------------------------------------
     # 1. Remove citation markers like [29], [3], [12,13]
@@ -47,7 +53,7 @@ def clean_text_content(text):
     text = re.sub(r"\s*\|\s*", " | ", text)
 
     return text.strip()
-  
+
 def normalize_header_token(token):
     token = token.lower().strip()
     token = token.replace('..','.').replace('.',' ')
@@ -62,7 +68,7 @@ def normalize_header_token(token):
         deduped.append(w)
     token = ' '.join(deduped)
     return token.strip()
-  
+
 def normalize_column_values(token):
     token = token.lower().strip()
     # Remove citation markers and stars
