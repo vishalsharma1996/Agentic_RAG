@@ -3,7 +3,7 @@ import numpy as np
 import os
 import pickle
 import pandas as pd
-from data_cleaning import clean_text_content
+from data_cleaning import clean_text_content,find_and_replace_urls
 
 def extract_sections_from_docling(path = 'arxiv_papers'):
     """
@@ -99,7 +99,7 @@ def extract_sections_from_docling(path = 'arxiv_papers'):
                 }
 
                 continue
-            
+
             if block_type not in ALLOWED_TYPES:
                 continue
             # -------------------------------------------------------------
@@ -139,12 +139,16 @@ def extract_sections_from_docling(path = 'arxiv_papers'):
 
               elif len(text_content.split(' ')) > 10:
                   text_content = clean_text_content(text_content)
-                # Append block information
+
+                  new_matches = find_and_replace_urls(text_content)
+
+                  # Append block information
                   current_section["content_blocks"].append({
                       "block_index": idx,       # original ordering from Docling
                       "page_number": page_number,
                       "type": block_type,       # paragraph / caption / etc.
-                      "text": text_content
+                      "text": text_content,
+                      'urls': [{"context": c, "url": u} for c, u in new_matches if new_matches]
                   })
 
                   # Update page_end so we know the full page span of the section
