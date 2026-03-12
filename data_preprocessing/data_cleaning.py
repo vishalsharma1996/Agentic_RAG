@@ -17,8 +17,6 @@ def clean_text_content(text):
     """
     text = text.lower()
 
-    text = re.sub(r"table\s*[-]?\s*\d+\s*[:\.]\s*", "", text)
-
     text = text.replace('-','')
 
     text = text.replace('@',' at ').replace('%',' percent ').replace('$',' dollar ')
@@ -71,6 +69,7 @@ def normalize_header_token(token):
 
 def normalize_column_values(token):
     token = token.lower().strip()
+    token = re.sub(r"\btable\s*-?\s*\d+\s*[:\.]?", "", token,flags=re.IGNORECASE)
     # Remove citation markers and stars
     token = re.sub(r"\[\d+\]", "", token)
     token = token.replace("*", "")
@@ -86,3 +85,38 @@ def normalize_column_values(token):
       parsed = [re.sub('[^0-9a-z. ]+',' ',p).strip() for p in parts if len(re.sub('[^0-9a-z. ]+',' ',p).strip())>1]
       return parsed
     return token
+
+def find_and_replace_urls(text_content):
+   # Fix URLs that are broken across line breaks (common in PDFs)
+    text_content = re.sub(r"(https?://[^\s]+)\s*\n\s*([^\s]+)", r"\1\2", text_content)
+
+    # Normalize multiple line breaks into a single space
+    text_content = re.sub(r"\n+", " ", text_content)
+
+    # Normalize repeated whitespace and trim edges
+    text_content = re.sub(r"\s+", " ", text_content).strip()
+
+    # Pattern to capture sentence fragment before a URL and the URL itself
+    pattern = r"([^\.]*?)\b(https?://[^\s]+)"
+
+    # Generic URL pattern used to remove URLs from the extracted context
+    general_url_pattern = r"https?://[^\s]+"
+
+    # Extract (context_before_url, url) pairs
+    matches = re.findall(pattern, text_content)
+
+    # Extract urls
+    urls = re.findall(general_url_pattern,text_content)
+                  
+    # Extract replacing words
+    url_replacement = [u.split("//")[-1].split(".")[0] for u in urls if u]
+                  
+    # Replace the url with meaningful words
+    # For ex https://huggingface.co/rag/ with huggingface
+    for u,r in zip(urls,url_replacement):
+      text_content = text_content.replace(u,r)
+                    
+    # Remove any URLs from the context part while keeping the extracted URL
+    new_matches = [(re.sub(general_url_pattern, '', script), url) for script, url in matches]
+
+    return new_matches
