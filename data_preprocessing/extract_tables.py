@@ -77,6 +77,7 @@ def extract_pdf_tables(path="arxiv_papers"):
                     table_description = clean_text_content(
                         caption_ref.resolve(result).text
                     )
+                    table_description = normalize_column_values(table_description)
 
                 # Convert Docling table object to pandas DataFrame
                 table_df: pd.DataFrame = table.export_to_dataframe(doc=result)
