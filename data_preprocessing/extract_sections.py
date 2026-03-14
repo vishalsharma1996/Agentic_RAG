@@ -85,7 +85,6 @@ def extract_sections_from_docling(path = 'arxiv_papers'):
                 # Increment section counter
                 section_id += 1
                 text_content = clean_text_content(text_content)
-                text_content = text_content.replace('-',' ')
                 text_content = re.sub('[^a-zA-Z_ ]','',text_content).strip()
                 # Initialize a new section container
                 current_section = {
