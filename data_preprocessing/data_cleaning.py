@@ -17,7 +17,7 @@ def clean_text_content(text):
     """
     text = text.lower()
 
-    text = text.replace('-','')
+    text = text.replace('-',' ')
 
     text = text.replace('@',' at ').replace('%',' percent ').replace('$',' dollar ')
     # ---------------------------------------------------------
@@ -107,15 +107,15 @@ def find_and_replace_urls(text_content):
 
     # Extract urls
     urls = re.findall(general_url_pattern,text_content)
-                  
+
     # Extract replacing words
     url_replacement = [u.split("//")[-1].split(".")[0] for u in urls if u]
-                  
+
     # Replace the url with meaningful words
     # For ex https://huggingface.co/rag/ with huggingface
     for u,r in zip(urls,url_replacement):
       text_content = text_content.replace(u,r)
-                    
+
     # Remove any URLs from the context part while keeping the extracted URL
     new_matches = [(re.sub(general_url_pattern, '', script), url) for script, url in matches]
 
