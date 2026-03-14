@@ -44,6 +44,7 @@ def build_section_chunks(section_folder_path, sections='sections'):
 
                 # Build chunk record
                 chunks.append({
+                    "chunk_id": f"{topic}_{row['paper_id']}_sec_{row['section_id']}",
                     "text": merged_text,
                     "metadata": {
                         "paper_id": row['paper_id'],
@@ -112,6 +113,7 @@ def build_table_chunks(table_folder_path, tables='tables'):
                     text = f"{caption} {description}"
 
                     tables_li.append({
+                        "chunk_id": f"{topic}_{row['paper_id']}_table_{row['table_id']}",
                         "text": text,
                         "metadata": {
                             "paper_id": row['paper_id'],
