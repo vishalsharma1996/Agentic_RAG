@@ -1,7 +1,7 @@
 from docling_parser import parse_pdf_docs
 from extract_sections import extract_sections_from_docling
 from extract_tables import extract_pdf_tables
-from data_preprocessing.chunk_builder import build_section_chunks,build_table_chunks
+from chunk_builder import build_section_chunks,build_table_chunks
 
 def main():
 
@@ -13,7 +13,7 @@ def main():
 
   print("Step 3: Extracting tables...")
   extract_pdf_tables(path = 'arxiv_papers')
-  
+
   print("Step 4: Combine Chunks for table and sections...")
   build_section_chunks('parsed_docs')
   build_table_chunks('parsed_docs')
