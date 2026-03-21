@@ -17,8 +17,6 @@ def clean_text_content(text):
     """
     text = text.lower()
 
-    text = text.replace('-',' ')
-
     text = text.replace('@',' at ').replace('%',' percent ').replace('$',' dollar ')
     # ---------------------------------------------------------
     # 1. Remove citation markers like [29], [3], [12,13]
