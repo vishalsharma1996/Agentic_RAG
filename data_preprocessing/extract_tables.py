@@ -138,7 +138,7 @@ def extract_pdf_tables(path="arxiv_papers"):
                     col_value = new_df.columns.tolist()[1]
 
                     new_df[col_value] = new_df.apply(
-                        lambda x: x.Metric_Prefix + " associated " + x[col_value]
+                        lambda x: x.Metric_Prefix + " associated with " + x[col_value]
                         if x.Metric_Prefix is not None and x[col_value] is not None
                         else x[col_value],
                         axis=1,
