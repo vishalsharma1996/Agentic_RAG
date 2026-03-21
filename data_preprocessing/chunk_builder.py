@@ -1,7 +1,7 @@
 import pandas as pd
 from pathlib import Path
 import os
-
+import re
 # -----------------------------
 # Section chunk builder
 # -----------------------------
@@ -107,10 +107,21 @@ def build_table_chunks(table_folder_path, tables='tables'):
                 for _, row in desc_df.iterrows():
 
                     description = row['table_description']
-                    caption = row['caption']
-
+                    caption = row['caption'].strip()
+                    match = re.findall(r"(.*?following values)",description)
+                    table_row = ''
+                    if match:
+                      table_row = re.split(r"\s*has the following values", match[0])[0] + ' has'
+                    description_li = description.split(',')
+                    new_description_li = []
+                    if len(description_li) > 1:
+                      description_li[0] = description_li[0].replace(match[-1],table_row).replace('is','as')
+                      new_description_li = [description_li[0]] + [table_row + ' ' + des.strip().replace('is','as') for des in  description_li[1:]]
+                    if new_description_li:
+                      description = ','.join(new_description_li)
+                    
                     # Combine caption and description into chunk text
-                    text = f"{caption} {description}"
+                    text = f"{caption} {description}".strip()
 
                     tables_li.append({
                         "chunk_id": f"{topic}_{row['paper_id']}_table_{row['table_id']}",
